@@ -21,5 +21,18 @@ public class HelloWorldController {
         model.addAttribute("greeting", "Hello World Again, from Spring 4 MVC");
         return "welcome";
     }
+    
+    
+    
+    
+    /**
+     * TODO:
+     * addWorkout(Workout workout)
+     * saveWorkout(Workout workout)
+     * deleteWorkout(id number)
+     * getWorkouts()
+     * getWorkout()
+     * 
+     */
  
 }
