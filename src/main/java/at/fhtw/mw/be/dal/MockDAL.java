@@ -4,20 +4,12 @@ import at.fhtw.mw.be.model.Workout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataAccessLayer {
+public class MockDAL {
 
-    private static DataAccessLayer instance;
     private List<Workout> workouts;
 
-    private DataAccessLayer() {
+    public MockDAL() {
         workouts = new ArrayList<Workout>();
-    }
-
-    public static DataAccessLayer getInstance() {
-        if (instance == null) {
-            instance = new DataAccessLayer();
-        }
-        return instance;
     }
 
     /**
@@ -55,9 +47,10 @@ public class DataAccessLayer {
      * Deletes the workout with the provided name. Does nothing if name does not exist.
      */
     public void deleteWorkout(String name) {
-        for (Workout w : workouts) {
-            if (w.getName().equals(name)) {
-                workouts.remove(w);
+        for (int i = 0; i < workouts.size(); i++) {
+            if (workouts.get(i).getName().equals(name)) {
+                workouts.remove(workouts.get(i));
+                return;
             }
         }
     }
