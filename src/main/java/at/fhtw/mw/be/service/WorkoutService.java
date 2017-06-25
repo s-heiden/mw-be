@@ -1,12 +1,12 @@
-package at.fhtw.mw.be.dal;
+package at.fhtw.mw.be.service;
 
 import at.fhtw.mw.be.model.Workout;
 import java.util.List;
 
 /**
- * A data access layer that outlines basic CRUD operations.
+ * A business layer that outlines basic CRUD operations.
  */
-public interface DAL {
+public interface WorkoutService {
 
     /**
      * Adds a new workout to the DB. The workout is only added if no workout with the same name does already exist.
@@ -26,16 +26,16 @@ public interface DAL {
     /**
      * Returns the workout with the provided name or null if such object does not exist.
      */
-    Workout getWorkout(String name);
+    String getWorkout(String name);
 
     /**
      * Returns a list of all workouts.
      */
-    List<Workout> getWorkouts();
+    String getWorkouts();
 
     /**
      * Overwrites the workout with the same name as provided in the argument. The call is ignored if no such workout
-     * existsWorkout.
+ existsWorkout.
      */
     void updateWorkout(Workout workout);
 

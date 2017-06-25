@@ -15,8 +15,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(2, dal.getWorkouts().size());
     }
 
@@ -25,8 +25,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout1", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(1, dal.getWorkouts().size());
     }
 
@@ -35,8 +35,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals("Complex_JSON_String2", dal.getWorkout("workout2").getSets());
         Assert.assertEquals("Complex_JSON_String1", dal.getWorkout("workout1").getSets());
     }
@@ -46,8 +46,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertNull(dal.getWorkout("workout3"));
     }
 
@@ -56,10 +56,10 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Workout w3 = new Workout("workout1", "changed");
-        dal.saveWorkout(w3);
+        dal.updateWorkout(w3);
         Assert.assertEquals("changed", dal.getWorkout("workout1").getSets());
     }
 
@@ -68,8 +68,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(2, dal.getWorkouts().size());
     }
 
@@ -78,8 +78,8 @@ public class UnitTests {
         DAL dal = new MockDAL();
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         dal.deleteWorkout("workout1");
         dal.deleteWorkout("workout2");
         Assert.assertEquals(0, dal.getWorkouts().size());
@@ -94,91 +94,91 @@ public class UnitTests {
     ///// \\\\\ ///// SQLiteDAL ///// \\\\\ ///// 
     @Test
     public synchronized void SQLiteDAL_getWorkouts_should_return_empty_list() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Assert.assertEquals(0, dal.getWorkouts().size());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_addWorkout_should_insert_element() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(2, dal.getWorkouts().size());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_addWorkout_must_not_insert_element_if_equally_named_element_exists() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout1", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(1, dal.getWorkouts().size());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_getWorkout_should_return_correct_workout() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals("Complex_JSON_String2", dal.getWorkout("workout2").getSets());
         Assert.assertEquals("Complex_JSON_String1", dal.getWorkout("workout1").getSets());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_getWorkout_should_return_null_if_no_such_object_exists() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertNull(dal.getWorkout("workout3"));
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_saveWorkout_should_alter_existing_object() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Workout w3 = new Workout("workout1", "changed");
-        dal.saveWorkout(w3);
+        dal.updateWorkout(w3);
         Assert.assertEquals("changed", dal.getWorkout("workout1").getSets());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_getWorkouts_should_return_existing_elements() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         Assert.assertEquals(2, dal.getWorkouts().size());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
     @Test
     public synchronized void SQLiteDAL_deleteWorkout_should_remove_element() {
-        DAL dal = new SQLiteDAL();
+        DAL dal = new SQLiteDAL("Test");
         Workout w1 = new Workout("workout1", "Complex_JSON_String1");
         Workout w2 = new Workout("workout2", "Complex_JSON_String2");
-        dal.addWorkout(w1);
-        dal.addWorkout(w2);
+        dal.createWorkout(w1);
+        dal.createWorkout(w2);
         dal.deleteWorkout("workout1");
         dal.deleteWorkout("workout2");
         Assert.assertEquals(0, dal.getWorkouts().size());
-        dal.clear();
+        dal.clearWorkouts();
     }
 
 }

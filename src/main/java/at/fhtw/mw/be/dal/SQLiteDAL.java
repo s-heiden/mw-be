@@ -7,17 +7,18 @@ import java.util.List;
 
 public class SQLiteDAL implements DAL {
 
-    public static final String DATABASE_URL = "jdbc:sqlite:database.db";
     private static final String SQLITE_JDBC = "org.sqlite.JDBC";
     private Connection connection;
     public static final String TABLE_NAME = "workouts";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_SETS = "sets";
+    private final String databaseUrl;
 
     /**
      * Establishes the connection, sets up the database if there are no tables.
      */
-    public SQLiteDAL() {
+    public SQLiteDAL(String name) {
+        this.databaseUrl = "jdbc:sqlite:" + ((name.isEmpty()) ? "default" : name.toLowerCase()) + ".db";
         openDBConnection();
         setupDatabase();
     }
@@ -44,7 +45,7 @@ public class SQLiteDAL implements DAL {
         if (connection == null) {
             try {
                 Class.forName(SQLITE_JDBC);
-                connection = DriverManager.getConnection(DATABASE_URL);
+                connection = DriverManager.getConnection(databaseUrl);
             } catch (SQLException | ClassNotFoundException s) {
                 System.err.println(s.getClass().getName() + ": " + s.getMessage());
             }
@@ -52,17 +53,14 @@ public class SQLiteDAL implements DAL {
     }
 
     @Override
-    public boolean exists(String name) {
+    public boolean existsWorkout(String name) {
         PreparedStatement statement = null;
         String string = "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME + " = ?";
-        System.out.println("exists = " + string);
+        System.out.println("exists_string = " + string);
         ResultSet rs = null;
         try {
-            System.out.println("In Try.");
             statement = connection.prepareStatement(string);
-            System.out.println("Prepared string");
             statement.setString(1, name);
-            System.out.println("Will executeQuery.");
             rs = statement.executeQuery();
             boolean flag = rs.next();
             System.out.println("exists_flag = " + flag);
@@ -77,16 +75,17 @@ public class SQLiteDAL implements DAL {
     }
 
     @Override
-    public void addWorkout(Workout workout) {
-        if (!exists(workout.getName())) {
-            saveWorkout(workout);
+    public void createWorkout(Workout workout) {
+        if (!existsWorkout(workout.getName())) {
+            addRowToWorkouts(workout.getName());
+            updateWorkout(workout);
         }
     }
 
     @Override
     public void deleteWorkout(String name) {
         final String string = "DELETE FROM " + TABLE_NAME + " WHERE name = '" + name + "'";
-        System.out.println("string = " + string);
+        System.out.println("delete_string = " + string);
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(string);
@@ -145,9 +144,8 @@ public class SQLiteDAL implements DAL {
     }
 
     @Override
-    public void saveWorkout(Workout workout) {
-        addRowToWorkouts(workout.getName());
-
+    public void updateWorkout(Workout workout) {
+       
         PreparedStatement statement = null;
         String string = "UPDATE " + TABLE_NAME
                 + " SET " + COLUMN_NAME + " = ? , " + COLUMN_SETS + " = ? "
@@ -208,7 +206,7 @@ public class SQLiteDAL implements DAL {
     }
 
     @Override
-    public void clear() {
+    public void clearWorkouts() {
         try (Statement statement = connection.createStatement()) {
             String string = "DROP TABLE " + TABLE_NAME + ";";
             System.out.println("drop_string = " + string);
@@ -216,5 +214,6 @@ public class SQLiteDAL implements DAL {
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+        setupDatabase();
     }
 }
