@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 public class apiController {
 
@@ -34,40 +35,79 @@ public class apiController {
     public String welcome() {
         return "Welcome to MyWorkout REST API.";
     }
-
+    
     @RequestMapping("/get_workout/{workout}")
     public ResponseEntity<String> getWorkout(@PathVariable String workout) {
+        
+        if (!workoutService.existsWorkout(workout)) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);        
         return new ResponseEntity<>(workoutService.getWorkout(workout), httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping("/get_workouts/")
+    @RequestMapping("/get_workouts")
     public ResponseEntity<String> getWorkouts() {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(workoutService.getWorkouts(), httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping("/clear_workouts/")
-    public void clearWorkouts() {
+    @RequestMapping("/clear_workouts")
+    public ResponseEntity<String> clearWorkouts() {
+        try {
         workoutService.clearWorkouts();
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping("/delete_workout/{workout}")
-    public void deleteWorkout(@PathVariable String workout) {
-        workoutService.deleteWorkout(workout);
+    public ResponseEntity<String> deleteWorkout(@PathVariable String workout) {
+        try {
+         workoutService.deleteWorkout(workout);
+            return new ResponseEntity("{}", HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity("{}",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(value = "/create_workout/", method = RequestMethod.POST)
-    public void createWorkout(@RequestBody String request) {
-        Workout w = Workout.fromJson(request);
-        workoutService.createWorkout(w);
-    }
+    public ResponseEntity<String> createWorkout(@RequestBody String request) {
+        
 
-    @RequestMapping(value = "/update_workout/", method = RequestMethod.POST)
-    public void updateWorkout(@RequestBody String request) {
         Workout w = Workout.fromJson(request);
+        
+        if (workoutService.existsWorkout(w.getName())) {
+            return new ResponseEntity("Workout with the name \"" + w.getName() + "\" already exists",HttpStatus.BAD_REQUEST);
+        }
+        
+        workoutService.createWorkout(w);
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON); 
+        return new ResponseEntity<>(w.toJson(), httpHeaders, HttpStatus.OK);
+    }
+    
+    @CrossOrigin
+    @RequestMapping(value = "/update_workout", method = RequestMethod.POST)
+    public ResponseEntity<String> updateWorkout(@RequestBody String request) {
+        
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON); 
+        
+        Workout w = Workout.fromJson(request);
+        
+        if (!workoutService.existsWorkout(w.getName())) {
+            return new ResponseEntity("Workout with the name \""+ w.getName()+"\" not found", HttpStatus.NOT_FOUND);
+        }
+        
         workoutService.updateWorkout(w);
+        
+        return new ResponseEntity<>(w.toJson(), httpHeaders, HttpStatus.OK);
     }
 }

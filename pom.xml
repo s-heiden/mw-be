@@ -100,4 +100,5 @@
         </pluginManagement>
         <finalName>mw-be</finalName>
     </build>
+
 </project>

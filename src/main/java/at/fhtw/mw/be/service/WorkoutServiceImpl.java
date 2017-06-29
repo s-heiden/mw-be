@@ -3,6 +3,7 @@ package at.fhtw.mw.be.service;
 import at.fhtw.mw.be.dal.DAL;
 import at.fhtw.mw.be.dal.SQLiteDAL;
 import at.fhtw.mw.be.model.Workout;
+import jdk.nashorn.api.scripting.JSObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public String getWorkouts() {
         if (dal.getWorkouts().size() == 0) {
-            return "";
+            return "[]";
         }
 
         String string = "[";
@@ -48,7 +49,10 @@ public class WorkoutServiceImpl implements WorkoutService {
         }
         string = string.substring(0, string.length() - 1);
         string += "]";
+       
         return string;
+        
+        
     }
 
     @Override
