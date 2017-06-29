@@ -1,7 +1,11 @@
 # mw-be
 ## SETUP
-in project folder execute ```mvn deploy```
-the resulting *.war file should be in ```./target``` and can be deployed on a Java server (successfully tested on Apache Tomcat 8.5.15)
+- Clone the mw-be project on your machine
+- Open the folder ``mw-be`` with Netbeans
+- Unless you have a current version of Apache Tomcat (tested with v.8.5.15), please add one in the Tab 'Services' -> 'Servers'.
+- As soon as is configured, select the project in the project view and click the play button to deploy and run the backend server.
+- Please contact me at stefan.w.heiden{{at}}gmail.com if any questions should arise.
+- If no errors occured you can access the backend using the following URLS:
 
 ## API DESCRIPTION
 ### Create Workout
