@@ -103,7 +103,7 @@ public class apiController {
         Workout w = Workout.fromJson(request);
         
         if (!workoutService.existsWorkout(w.getName())) {
-            return new ResponseEntity("Workout with the name \""+ w.getName()+"\" not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Workout with the name \""+ w.getName()+"\" not found.", HttpStatus.NOT_FOUND);
         }
         
         workoutService.updateWorkout(w);
